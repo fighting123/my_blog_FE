@@ -4,6 +4,7 @@ import home from '@/pages/home'
 import createPosts from '@/pages/createPosts'
 import signUp from '@/pages/signUp'
 import signIn from '@/pages/signIn'
+import store from '@/store'
 
 Vue.use(Router)
 
@@ -45,6 +46,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
+    store.commit('checkLogin', true)
     if (to.path === '/signIn') {
       next('/')
     } else {
