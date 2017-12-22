@@ -59,6 +59,7 @@
                   type: 'success',
                   message: res.data.message
                 })
+                localStorage.setItem('_id', res.data.info)
                 vm.$router.push('/')
                 store.commit('checkLogin', true)
               } else {
