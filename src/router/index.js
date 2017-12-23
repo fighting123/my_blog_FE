@@ -5,6 +5,7 @@ import createPosts from '@/pages/createPosts'
 import signUp from '@/pages/signUp'
 import signIn from '@/pages/signIn'
 import store from '@/store'
+import localStorage from '@/plugins/localStorage'
 
 Vue.use(Router)
 
@@ -39,7 +40,7 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   // 如果localStorage没有_id则表示未登录，强制跳转到登录页
-  if (!localStorage.getItem('_id')) {
+  if (!localStorage.get('_id')) {
     if (to.path !== '/signUp' && to.path !== '/signIn') {
       next('/signIn')
     } else {

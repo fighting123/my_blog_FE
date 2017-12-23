@@ -21,6 +21,7 @@
 <script>
   import Header from '@/components/Header.vue'
   import $axios from '@/plugins/ajax'
+  import localStorage from '@/plugins/localStorage'
   import store from '@/store'
   export default {
     components: {
@@ -59,7 +60,7 @@
                   type: 'success',
                   message: res.data.message
                 })
-                localStorage.setItem('_id', res.data.info)
+                localStorage.set('_id', res.data.info, res.data.expTime)
                 vm.$router.push('/')
                 store.commit('checkLogin', true)
               } else {
