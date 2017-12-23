@@ -11,7 +11,8 @@
           <el-col :span="3">{{ message.create_at }}</el-col>
           <el-col :span="4" class="messageFooterRight">
             <span>浏览( {{message.pv}} )</span>
-            <span @click="bloomLeaveMessage = !bloomLeaveMessage">留言( {{message.words}} )</span>
+            <span @click="LeaveMessageHandle" v-if="message.commentsCount">留言( {{ message.commentsCount }} )</span>
+            <span @click="LeaveMessageHandle" v-else>留言(0)</span>
             <el-dropdown v-if="loginStatus" @command="handleCommand">
               <span class="el-dropdown-link"><i class="el-icon-arrow-down el-icon--left"></i></span>
               <el-dropdown-menu slot="dropdown">
@@ -23,7 +24,16 @@
         </el-row>
       </div>
       <div class="messageContent" v-if="bloomLeaveMessage">
-        <leaveMessage :leaveMessInfo="leaveMessInfo"></leaveMessage>
+        <el-row type="flex" justify="begin" style="border-bottom: 1px solid #ccc;margin-bottom: 10px">
+          <el-col :span="1" class="leaveMessTitle">留言</el-col>
+        </el-row>
+        <div v-for="(leaveMessInfo, index) in leaveMessInfoList" :key="index">
+          <leaveMessage :leaveMessInfo="leaveMessInfo" :message="message" @deleteLeaveMess="deleteLeaveMess"></leaveMessage>
+        </div>
+        <div v-if="loginStatus">
+          <el-input type="textarea" :autosize="{ minRows: 6 }" v-model="content"></el-input>
+          <el-button type="primary" @click="leaveMess" style="margin-top: 10px;">留言</el-button>
+        </div>
       </div>
     </el-main>
   </el-container>
@@ -40,11 +50,13 @@
       return {
         leaveMessInfo: {
           imgSrc: '../../static/test.png',
-          leaveMessage: '',
-          name: 'newViwer',
-          time: '2017-08-08 00:00:00',
-          content: '沙发'
+          author: {},
+          create_at: '2017-08-08 00:00:00',
+          content: '沙发',
+          _id: ''
         },
+        content: '',
+        leaveMessInfoList: [],
         bloomLeaveMessage: false,   // 留言板展示
         loginStatus: store.state.statusLogin
       }
@@ -61,6 +73,63 @@
         $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
           if (res.data.status === 'success') {
             vm.$emit('getOnePost', res.data.post)
+          }
+        })
+      },
+      LeaveMessageHandle () {
+        let vm = this
+        vm.bloomLeaveMessage = !vm.bloomLeaveMessage
+        if (vm.bloomLeaveMessage === true) {
+          $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
+            if (res.data.status === 'success') {
+              vm.leaveMessInfoList = res.data.comments
+            }
+          })
+        }
+      },
+      leaveMess () {
+        let vm = this
+        $axios.post('api/comments', {postId: vm.message._id, content: vm.content}).then((res) => {
+          if (res.data.status === 'success') {
+            vm.$message({
+              type: 'success',
+              message: res.data.message
+            })
+            vm.bloomLeaveMessage = !vm.bloomLeaveMessage
+            vm.content = '' // 留言框清空
+            // 刷新页面的留言数
+            vm.$emit('refreshPosts')
+          } else {
+            vm.$message({
+              type: 'error',
+              message: res.data.message
+            })
+          }
+        })
+      },
+      deleteLeaveMess (commentId) {
+        let vm = this
+        $axios.get(`api/comments/${commentId}/remove`).then((res) => {
+          if (res.data.status === 'success') {
+            vm.$message({
+              type: 'success',
+              message: res.data.message
+            })
+            // 刷新页面的留言数
+            vm.$emit('refreshPosts')
+            // 刷新留言列表
+            if (vm.bloomLeaveMessage === true) {
+              $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
+                if (res.data.status === 'success') {
+                  vm.leaveMessInfoList = res.data.comments
+                }
+              })
+            }
+          } else {
+            vm.$message({
+              type: 'error',
+              message: res.data.message
+            })
           }
         })
       },
@@ -122,8 +191,13 @@
     font-size: 12px;
     color: #909399;
   }
-  .messageFooterRight {
+  .posts .messageFooterRight {
     cursor: pointer;
+  }
+  .posts .messageContent .leaveMessTitle {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 600;
   }
   /*.posts .el-icon-arrow-down:hover {*/
     /*transform: rotate(180deg);*/

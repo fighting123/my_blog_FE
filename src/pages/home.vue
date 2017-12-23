@@ -5,7 +5,7 @@
     </el-header>
     <el-main>
       <div v-for="(message, index) in messageList" :key="index">
-        <Posts :message="message" @getOnePost="showOnePost" @getPostList="showList"></Posts>
+        <Posts :message="message" @getOnePost="showOnePost" @getPostList="showList" @refreshPosts="showList"></Posts>
       </div>
     </el-main>
   </el-container>
@@ -30,7 +30,7 @@
           content: 'content../components/</br>Posts.vue../components/Posts.vue../comp</br>onents/Posts.vue../co</br>mponents/Posts.vue../components/Posts.vue',
           create_at: '2017-12-25',
           pv: '1',
-          words: '222222'
+          commentsCount: '0'
         },
         title: {
           title: 'myblog',

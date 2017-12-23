@@ -1,14 +1,13 @@
 export default {
-  set: function (key, value, days) {
+  set: function (key, value, seconds) {
     // 设置过期原则
     if (!value) {
       localStorage.removeItem(key)
     } else {
-      var Days = days || 7 // 默认保留7天
       var exp = new Date()
       localStorage[key] = JSON.stringify({
         value,
-        expires: exp.getTime() + Days * 24 * 60 * 60 * 1000
+        expires: exp.getTime() + seconds
       })
     }
   },
