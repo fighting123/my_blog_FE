@@ -5,7 +5,7 @@
     </el-aside>
     <el-main class="mainContent">
       <div class="messageContent">
-        <div class="messageTitle" @click="titleHandle">{{ message.title }}</div>
+        <div class="messageTitle" @click.once="titleHandle">{{ message.title }}</div>
         <div v-html="message.content" class="messageCode"></div>
         <el-row type="flex" justify="space-between" class="messageFooter">
           <el-col :span="3">{{ message.create_at }}</el-col>
@@ -70,6 +70,7 @@
     methods: {
       titleHandle () {
         let vm = this
+        this.$router.push('/detail')
         $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
           if (res.data.status === 'success') {
             vm.$emit('getOnePost', res.data.post)
@@ -98,7 +99,8 @@
             vm.bloomLeaveMessage = !vm.bloomLeaveMessage
             vm.content = '' // 留言框清空
             // 刷新页面的留言数
-            vm.$emit('refreshPosts')
+            vm.message.commentsCount += 1
+            // vm.$emit('refreshPosts')
           } else {
             vm.$message({
               type: 'error',
@@ -116,7 +118,9 @@
               message: res.data.message
             })
             // 刷新页面的留言数
-            vm.$emit('refreshPosts')
+            // 直接加一则避免在调用一次接口
+            vm.message.commentsCount += 1
+            // vm.$emit('refreshPosts')
             // 刷新留言列表
             if (vm.bloomLeaveMessage === true) {
               $axios.get(`/api/posts/${vm.message._id}`).then((res) => {

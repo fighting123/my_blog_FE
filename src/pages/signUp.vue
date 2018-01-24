@@ -24,10 +24,11 @@
           <el-upload
             ref="upload"
             class="avatar-uploader"
-            action=""
+            action="http://localhost:8080/api/signup/image"
+            name="avatar"
             :show-file-list="false"
             :auto-upload="false"
-            :on-success="handleAvatarSuccess"
+            :on-change="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -68,7 +69,8 @@
           password: '',
           rePassword: '',
           gender: '',
-          bio: ''
+          bio: '',
+          avatar: ''
         },
         imageUrl: '',
         rules: {
@@ -92,41 +94,48 @@
     },
     methods: {
       handleAvatarSuccess (res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw)
+        this.imageUrl = URL.createObjectURL(file[0].raw)
+        this.signUpForm.avatar = file[0]
       },
       beforeAvatarUpload (file) {
-//        const isJPG = file.type === 'image/jpeg'
+        const isJPG = file.type === 'image/jpeg'
         const isLt2M = file.size / 1024 / 1024 < 2
 
-//        if (!isJPG) {
-//          this.$message.error('上传头像图片只能是 JPG 格式!')
-//        }
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过 2MB!')
         }
-//        return isJPG && isLt2M
+        // return isJPG && isLt2M
         return isLt2M
       },
       submitUpload () {
-        // this.$refs.upload.submit()
         let vm = this
-        vm.$refs['signUpForm'].validate((valid) => {
-          if (valid) {
-            $axios.post('/api/signup/', this.signUpForm).then(function (res) {
-              if (res.data.status === 'success') {
-                vm.$message({
-                  type: 'success',
-                  message: res.data.status
-                })
-                vm.$router.push('/signIn')
-              } else {
-                vm.$message({
-                  type: 'error',
-                  message: res.data
-                })
-              }
-            })
-          }
+        var imageUpload = new Promise(function (resolve, reject) {
+          vm.$refs['upload'].submit()
+          resolve()
+        })
+        imageUpload.then(function () {
+          vm.$refs['signUpForm'].validate((valid) => {
+            if (valid) {
+              console.log(vm.signUpForm)
+              $axios.post('/api/signup/', vm.signUpForm).then(function (res) {
+                if (res.data.status === 'success') {
+                  vm.$message({
+                    type: 'success',
+                    message: res.data.message
+                  })
+                  vm.$router.push('/signIn')
+                } else {
+                  vm.$message({
+                    type: 'error',
+                    message: res.data.message
+                  })
+                }
+              })
+            }
+          })
         })
       }
     }
@@ -152,7 +161,9 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    margin-top: 30px
+    margin-top: 30px;
+    width: 50px;
+    height: 50px;
   }
   .signUp .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
@@ -164,6 +175,13 @@
     height: 50px;
     line-height: 50px;
     text-align: center;
+  }
+  .signUp .avatar {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
   }
   .signUp .el-button {
     width: 520px;

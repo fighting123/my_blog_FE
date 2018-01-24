@@ -5,7 +5,7 @@
     </el-header>
     <el-main>
       <div v-for="(message, index) in messageList" :key="index">
-        <Posts :message="message" @getOnePost="showOnePost" @getPostList="showList" @refreshPosts="showList"></Posts>
+        <Posts :message="message" @getOnePost="showOnePost" @getPostList="showList"></Posts>
       </div>
     </el-main>
   </el-container>
@@ -14,6 +14,7 @@
   import Posts from '../components/Posts.vue'
   import Header from '../components/Header.vue'
   import $axios from '@/plugins/ajax'
+  import localStorage from '@/plugins/localStorage'
   export default {
     components: {
       Posts,
@@ -46,7 +47,9 @@
       },
       showList () {
         let vm = this
-        $axios.get('/api/posts').then(function (res) {
+        // 特定用户的文章
+        let userId = localStorage.get('_id') || ''
+        $axios.get(`/api/posts?author=${userId}`).then(function (res) {
           if (res.data.status === 'success') {
             vm.messageList = res.data.posts
           }
@@ -55,6 +58,15 @@
     },
     created () {
       this.showList()
+    },
+    watch: {
+      // 监听路由变化，区分详情页和列表页
+      '$route' (to, from) {
+        // 对路由变化作出响应...
+        if (to.path === '/') {
+          this.showList()
+        }
+      }
     }
   }
 </script>

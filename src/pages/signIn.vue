@@ -63,6 +63,7 @@
                 localStorage.set('_id', res.data.info, res.data.expTime)
                 vm.$router.push('/')
                 store.commit('checkLogin', true)
+                store.commit('setUser', vm.signInForm.name)
               } else {
                 vm.$message({
                   type: 'error',

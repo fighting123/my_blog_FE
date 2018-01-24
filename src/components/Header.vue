@@ -49,6 +49,7 @@
                   message: res.data.message
                 })
                 store.commit('checkLogin', false)
+                store.commit('deleteUser')
                 localStorage.removeItem('_id')
                 vm.loginStatus = store.state.statusLogin
                 window.location.reload()
