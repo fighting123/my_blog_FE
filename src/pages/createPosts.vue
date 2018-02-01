@@ -6,7 +6,7 @@
     <el-main>
       <el-row class="posts">
         <el-col :span="2">
-          <img :src="imgSrc" alt="">
+          <img :src="imgSrc" alt="" class="asideAvatar">
         </el-col>
         <el-col :span="22" class="messageContent">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -29,6 +29,7 @@
   import Posts from '../components/Posts.vue'
   import Header from '../components/Header.vue'
   import $axios from '@/plugins/ajax'
+  import localStorage from '@/plugins/localStorage'
   export default {
     components: {
       Posts,
@@ -40,7 +41,7 @@
           title: 'myblog',
           subTitle: 'my first blog'
         },
-        imgSrc: '../../static/test.png',
+        imgSrc: '',
         ruleForm: {
           title: '',
           content: ''
@@ -98,10 +99,19 @@
       }
     },
     created () {
+      this.imgSrc = `/api/image/${localStorage.get('imgUrl')}`
       // 如果是编辑页，需要获取文章数据
       if (this.$route.params.id) {
         $axios.get(`/api/posts/${this.$route.params.id}/edit`).then((res) => {
-          this.ruleForm = res.data.post
+          if (res.data.status === 'success') {
+            this.ruleForm = res.data.post
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.message
+            })
+            this.$router.back(-1)
+          }
         })
       }
     }
@@ -115,8 +125,15 @@
     margin: auto;
   }
   .createPosts .messageContent {
-    border: 1px solid #ccc;
+    border: 1px solid #DCDFE6;
     text-align: left;
     padding: 10px;
+  }
+  .createPosts .asideAvatar {
+    border: 1px solid #EBEEF5;
+    border-radius: 50%;
+    width: 70%;
+    height: 70%;
+    float: left
   }
 </style>

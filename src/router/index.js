@@ -13,8 +13,18 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/',
+      path: '/',          // 主页
       name: 'home',
+      component: home
+    },
+    {
+      path: '/home/:id',   // 个人主页
+      name: 'personalHome',
+      component: home
+    },
+    {
+      path: '/detail/:id',
+      name: 'detail',
       component: home
     },
     {
@@ -38,11 +48,6 @@ const router = new Router({
       component: createPosts
     },
     {
-      path: '/detail',
-      name: 'detail',
-      component: home
-    },
-    {
       path: '*',
       name: '404',
       component: Error
@@ -52,7 +57,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // 如果localStorage没有_id则表示未登录，强制跳转到登录页(如果进入的是主页，则不需要登录,detail代表文章详情页,任何人可以查看)
   if (!localStorage.get('_id')) {
-    if (to.path !== '/signUp' && to.path !== '/signIn' && to.path !== '/' && to.path !== '/detail') {
+    if (to.path !== '/signUp' && to.path !== '/signIn' && to.path !== '/' && to.path.indexOf('detail') < 0) {
       next('/signIn')
     } else {
       next()

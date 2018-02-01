@@ -61,6 +61,7 @@
                   message: res.data.message
                 })
                 localStorage.set('_id', res.data.info, res.data.expTime)
+                localStorage.set('imgUrl', res.data.imgUrl, res.data.expTime)
                 vm.$router.push('/')
                 store.commit('checkLogin', true)
                 store.commit('setUser', vm.signInForm.name)

@@ -98,12 +98,12 @@
         this.signUpForm.avatar = file[0]
       },
       beforeAvatarUpload (file) {
-        const isJPG = file.type === 'image/jpeg'
+        // const isJPG = file.type === 'image/jpeg'
         const isLt2M = file.size / 1024 / 1024 < 2
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!')
-        }
+//      if (!isJPG) {
+//        this.$message.error('上传头像图片只能是 JPG 格式!')
+//       }
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过 2MB!')
         }
@@ -119,7 +119,7 @@
         imageUpload.then(function () {
           vm.$refs['signUpForm'].validate((valid) => {
             if (valid) {
-              console.log(vm.signUpForm)
+              // console.log(vm.signUpForm)
               $axios.post('/api/signup/', vm.signUpForm).then(function (res) {
                 if (res.data.status === 'success') {
                   vm.$message({

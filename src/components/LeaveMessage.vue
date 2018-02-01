@@ -2,7 +2,7 @@
   <section class="leaveMess">
     <el-row>
       <el-col :span="1">
-        <img :src="leaveMessInfo.imgSrc" alt="">
+        <img :src="imgSrc" alt="" class="asideAvatar">
       </el-col>
       <el-col :span="22">
         <span class="leaveMessName">{{ leaveMessInfo.author.name }}</span>
@@ -19,7 +19,8 @@
     data () {
       return {
         content: '',
-        loginStatus: store.state.statusLogin
+        loginStatus: store.state.statusLogin,
+        imgSrc: ''
       }
     },
     props: {
@@ -32,6 +33,9 @@
       deleteComment () {
         this.$emit('deleteLeaveMess', this.leaveMessInfo._id)
       }
+    },
+    created () {
+      this.imgSrc = `/api/image/${this.leaveMessInfo.author.avatar}`
     }
   }
 </script>
@@ -57,7 +61,13 @@
   .leaveMess .deleteLeaveMess:hover {
     font-size: 13px;
   }
-  .leaveMessContent {
+  .leaveMess .leaveMessContent {
     margin: 5px 10px;
+  }
+  .leaveMess .asideAvatar {
+    border: 1px solid #EBEEF5;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
   }
 </style>

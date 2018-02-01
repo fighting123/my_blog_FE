@@ -13,7 +13,8 @@
             <el-dropdown-item command="signupHandle">注册</el-dropdown-item>
           </el-dropdown-menu>
           <el-dropdown-menu slot="dropdown" v-else>
-            <el-dropdown-item command="homeHandle">个人主页</el-dropdown-item>
+            <el-dropdown-item command="homeHandle">主页</el-dropdown-item>
+            <el-dropdown-item command="personalHomeHandle">个人主页</el-dropdown-item>
             <el-dropdown-item command="createPostsHandle">发表文章</el-dropdown-item>
             <el-dropdown-item command="signOutHandle">登出</el-dropdown-item>
           </el-dropdown-menu>
@@ -25,17 +26,18 @@
 <script>
   import $axios from '@/plugins/ajax'
   import store from '@/store'
+  import localStorage from '@/plugins/localStorage'
   export default {
     data () {
       return {
-        loginStatus: store.state.statusLogin
+        loginStatus: store.state.statusLogin,
+        title: {
+          title: 'myblog',
+          subTitle: 'my first blog'
+        }
       }
     },
     props: {
-      title: {
-        type: Object,
-        default: {}
-      }
     },
     methods: {
       handleCommand (command) {
@@ -50,7 +52,7 @@
                 })
                 store.commit('checkLogin', false)
                 store.commit('deleteUser')
-                localStorage.removeItem('_id')
+                localStorage.remove('_id')
                 vm.loginStatus = store.state.statusLogin
                 window.location.reload()
                 vm.$router.push('/')
@@ -63,8 +65,12 @@
           case 'signupHandle':
             vm.$router.push('/signUp')
             break
-          case 'homeHandle':
-            vm.$router.push('/')
+          case 'HomeHandle':
+            vm.$router.push(`/`)
+            break
+          case 'personalHomeHandle':
+            let userId = localStorage.get('_id') || ''
+            vm.$router.push(`/home/${userId}`)
             break
           case 'createPostsHandle':
             vm.$router.push('/createPosts')

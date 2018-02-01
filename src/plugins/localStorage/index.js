@@ -25,5 +25,8 @@ export default {
       return localStorage[name]
     } finally {
     }
+  },
+  remove: function (name) {
+    localStorage.removeItem(name)
   }
 }

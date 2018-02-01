@@ -1,11 +1,11 @@
 <template>
   <el-container class="posts">
     <el-aside width="100px">
-      <img :src="message.author.imgSrc" alt="">
+      <img :src="imgSrc" alt="" class="asideAvatar">
     </el-aside>
     <el-main class="mainContent">
       <div class="messageContent">
-        <div class="messageTitle" @click.once="titleHandle">{{ message.title }}</div>
+        <div class="messageTitle">{{ message.title }}</div>
         <div v-html="message.content" class="messageCode"></div>
         <el-row type="flex" justify="space-between" class="messageFooter">
           <el-col :span="3">{{ message.create_at }}</el-col>
@@ -32,7 +32,7 @@
         </div>
         <div v-if="loginStatus">
           <el-input type="textarea" :autosize="{ minRows: 6 }" v-model="content"></el-input>
-          <el-button type="primary" @click="leaveMess" style="margin-top: 10px;">留言</el-button>
+          <el-button type="primary" @click.stop="leaveMess" style="margin-top: 10px;">留言</el-button>
         </div>
       </div>
     </el-main>
@@ -61,6 +61,11 @@
         loginStatus: store.state.statusLogin
       }
     },
+    computed: {
+      imgSrc: function () {
+        return `/api/image/${this.message.author.avatar}`
+      }
+    },
     props: {
       message: {
         type: Object,
@@ -68,24 +73,17 @@
       }
     },
     methods: {
-      titleHandle () {
-        let vm = this
-        this.$router.push('/detail')
-        $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
-          if (res.data.status === 'success') {
-            vm.$emit('getOnePost', res.data.post)
-          }
-        })
-      },
       LeaveMessageHandle () {
         let vm = this
-        vm.bloomLeaveMessage = !vm.bloomLeaveMessage
-        if (vm.bloomLeaveMessage === true) {
-          $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
-            if (res.data.status === 'success') {
-              vm.leaveMessInfoList = res.data.comments
-            }
-          })
+        if (vm.$route.path.indexOf('detail') > -1) {
+          vm.bloomLeaveMessage = !vm.bloomLeaveMessage
+          if (vm.bloomLeaveMessage === true) {
+            $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
+              if (res.data.status === 'success') {
+                vm.leaveMessInfoList = res.data.comments
+              }
+            })
+          }
         }
       },
       leaveMess () {
@@ -163,6 +161,14 @@
       }
     },
     created () {
+      // this.imgSrc = `/api/image/${this.message.author.avatar}`
+    },
+    watch: {
+      // 监听路由变化，区分详情页和列表页
+      '$route' (to, from) {
+        // 对路由变化作出响应...
+        // window.location.reload()
+      }
     }
   }
 </script>
@@ -202,6 +208,13 @@
     margin-bottom: 5px;
     font-size: 18px;
     font-weight: 600;
+  }
+  .posts .asideAvatar {
+    border: 1px solid #EBEEF5;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    float: left
   }
   /*.posts .el-icon-arrow-down:hover {*/
     /*transform: rotate(180deg);*/
