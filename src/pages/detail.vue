@@ -1,20 +1,17 @@
 <template>
-  <el-container class="detail">
-    <el-header class="detailHeader">
-      <Header></Header>
-    </el-header>
-    <el-main>
-      <Posts :message="message" @getOnePost="showOnePost"></Posts>
-    </el-main>
-  </el-container>
+  <Grail>
+    <Posts :message="message" @getOnePost="showOnePost"></Posts>
+  </Grail>
 </template>
 <script>
   import Posts from '../components/Posts.vue'
   import Header from '../components/Header.vue'
+  import Grail from '../components/Grail.vue'
   export default {
     components: {
       Posts,
-      Header
+      Header,
+      Grail
     },
     data () {
       return {
@@ -53,8 +50,3 @@
     }
   }
 </script>
-<style>
-  .detail .detailHeader {
-    margin-bottom: 50px
-  }
-</style>

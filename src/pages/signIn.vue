@@ -1,31 +1,28 @@
 <template>
-  <el-container class="signIn">
-    <el-header class="signInHeader">
-      <Header :title="title"></Header>
-    </el-header>
-    <el-main class="signInMain">
-      <el-form :model="signInForm" :rules="rules" ref="signInForm">
-        <el-form-item label="用户名:" prop="name">
-          <el-input v-model="signInForm.name" placeholder="用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="密码:" prop="password">
-          <el-input v-model="signInForm.password" placeholder="密码" type="password"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitIn">登录</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
+  <Grail>
+    <el-form :model="signInForm" :rules="rules" ref="signInForm" class="signIn">
+      <el-form-item label="用户名:" prop="name">
+        <el-input v-model="signInForm.name" placeholder="用户名"></el-input>
+      </el-form-item>
+      <el-form-item label="密码:" prop="password">
+        <el-input v-model="signInForm.password" placeholder="密码" type="password"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitIn">登录</el-button>
+      </el-form-item>
+    </el-form>
+  </Grail>
 </template>
 <script>
   import Header from '@/components/Header.vue'
+  import Grail from '../components/Grail.vue'
   import $axios from '@/plugins/ajax'
   import localStorage from '@/plugins/localStorage'
   import store from '@/store'
   export default {
     components: {
-      Header
+      Header,
+      Grail
     },
     data () {
       return {
@@ -80,14 +77,10 @@
 </script>
 <style>
   .signIn {
-    width: 50%;
     margin: 0 auto;
-  }
-  .signIn .signInHeader {
-    margin-bottom: 50px
-  }
-  .signIn .signInMain {
-    border: 1px solid #ccc
+    width: 40%;
+    border: 1px solid #ccc;
+    padding: 20px;
   }
   .signIn .el-select .el-input {
     width: 520px

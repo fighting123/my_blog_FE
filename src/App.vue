@@ -18,6 +18,16 @@ export default {
   text-align: center;
   margin: 0 auto;
   padding: 0;
-  width: 60%;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+.el-main {
+  width: 70%;
+  margin: 0 auto;
+}
+.el-header {
+  padding: 0
 }
 </style>

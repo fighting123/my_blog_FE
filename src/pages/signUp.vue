@@ -1,55 +1,52 @@
 <template>
-  <el-container class="signUp">
-    <el-header class="signUpHeader">
-      <Header :title="title"></Header>
-    </el-header>
-    <el-main class="signUpMain">
-      <el-form :model="signUpForm" :rules="rules" ref="signUpForm">
-        <el-form-item label="用户名:" prop="name">
-          <el-input v-model="signUpForm.name" placeholder="用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="密码:" prop="password">
-          <el-input v-model="signUpForm.password" placeholder="密码" type="password"></el-input>
-        </el-form-item>
-        <el-form-item label="重复密码:" prop="rePassword">
-          <el-input v-model="signUpForm.rePassword" placeholder="重复密码" type="password"></el-input>
-        </el-form-item>
-        <el-form-item label="性别:" prop="gender">
-          <el-select v-model="signUpForm.gender">
-            <el-option label="男" value="f"></el-option>
-            <el-option label="女" value="m"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="头像" prop="avatar">
-          <el-upload
-            ref="upload"
-            class="avatar-uploader"
-            action="http://localhost:8080/api/signup/image"
-            name="avatar"
-            :show-file-list="false"
-            :auto-upload="false"
-            :on-change="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="个人简介" prop="bio">
-          <el-input v-model="signUpForm.bio" type="textarea" :autosize="{ minRows: 6 }"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitUpload">注册</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
+  <Grail>
+    <el-form :model="signUpForm" :rules="rules" ref="signUpForm" class="signUp">
+      <el-form-item label="用户名:" prop="name">
+        <el-input v-model="signUpForm.name" placeholder="用户名"></el-input>
+      </el-form-item>
+      <el-form-item label="密码:" prop="password">
+        <el-input v-model="signUpForm.password" placeholder="密码" type="password"></el-input>
+      </el-form-item>
+      <el-form-item label="重复密码:" prop="rePassword">
+        <el-input v-model="signUpForm.rePassword" placeholder="重复密码" type="password"></el-input>
+      </el-form-item>
+      <el-form-item label="性别:" prop="gender">
+        <el-select v-model="signUpForm.gender">
+          <el-option label="男" value="f"></el-option>
+          <el-option label="女" value="m"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="头像" prop="avatar">
+        <el-upload
+          ref="upload"
+          class="avatar-uploader"
+          action="http://localhost:8080/api/signup/image"
+          name="avatar"
+          :show-file-list="false"
+          :auto-upload="false"
+          :on-change="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="个人简介" prop="bio">
+        <el-input v-model="signUpForm.bio" type="textarea" :autosize="{ minRows: 6 }"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitUpload">注册</el-button>
+      </el-form-item>
+    </el-form>
+  </Grail>
 </template>
 <script>
   import Header from '@/components/Header.vue'
+  import Grail from '../components/Grail.vue'
   import $axios from '@/plugins/ajax'
   export default {
     components: {
-      Header
+      Header,
+      Grail
     },
     data () {
       var checkRePassword = (rule, value, callback) => {
@@ -88,7 +85,10 @@
             { required: true, message: '请选择性别', trigger: 'change' }],
           bio: [
             { required: true, message: '请输入个人简介', trigger: 'blur' },
-            { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }]
+            { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }],
+          avatar: [
+            { required: true, message: '请选择头像', trigger: 'blur' }
+          ]
         }
       }
     },
@@ -143,14 +143,10 @@
 </script>
 <style>
   .signUp {
-    width: 50%;
     margin: 0 auto;
-  }
-  .signUp .signUpHeader {
-    margin-bottom: 50px
-  }
-  .signUp .signUpMain {
-    border: 1px solid #ccc
+    width: 40%;
+    border: 1px solid #ccc;
+    padding: 20px;
   }
   .signUp .el-select .el-input {
     width: 520px

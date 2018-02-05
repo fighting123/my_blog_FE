@@ -6,7 +6,7 @@
     <el-main class="mainContent">
       <div class="messageContent">
         <div class="messageTitle">{{ message.title }}</div>
-        <div v-html="message.content" class="messageCode"></div>
+        <div v-html="messageContent" class="messageCode"></div>
         <el-row type="flex" justify="space-between" class="messageFooter">
           <el-col :span="3">{{ message.create_at }}</el-col>
           <el-col :span="4" class="messageFooterRight">
@@ -64,6 +64,19 @@
     computed: {
       imgSrc: function () {
         return `/api/image/${this.message.author.avatar}`
+      },
+      messageContent: function () {
+        let str = this.message.content
+        var l = str.length
+        if (this.$route.path.indexOf('detail') > -1) {
+          return str
+        } else {
+          if (l <= 200) {
+            return str
+          } else {
+            return str.slice(0, 200) + '</br>...'
+          }
+        }
       }
     },
     props: {
@@ -109,50 +122,54 @@
       },
       deleteLeaveMess (commentId) {
         let vm = this
-        $axios.get(`api/comments/${commentId}/remove`).then((res) => {
-          if (res.data.status === 'success') {
-            vm.$message({
-              type: 'success',
-              message: res.data.message
-            })
-            // 刷新页面的留言数
-            // 直接加一则避免在调用一次接口
-            vm.message.commentsCount += 1
-            // vm.$emit('refreshPosts')
-            // 刷新留言列表
-            if (vm.bloomLeaveMessage === true) {
-              $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
-                if (res.data.status === 'success') {
-                  vm.leaveMessInfoList = res.data.comments
-                }
+        vm.$confirm('确认删除？', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
+          $axios.get(`api/comments/${commentId}/remove`).then((res) => {
+            if (res.data.status === 'success') {
+              vm.$message({
+                type: 'success',
+                message: res.data.message
+              })
+              // 刷新页面的留言数
+              // 直接加一则避免在调用一次接口
+              vm.message.commentsCount += 1
+              // vm.$emit('refreshPosts')
+              // 刷新留言列表
+              if (vm.bloomLeaveMessage === true) {
+                $axios.get(`/api/posts/${vm.message._id}`).then((res) => {
+                  if (res.data.status === 'success') {
+                    vm.leaveMessInfoList = res.data.comments
+                  }
+                })
+              }
+            } else {
+              vm.$message({
+                type: 'error',
+                message: res.data.message
               })
             }
-          } else {
-            vm.$message({
-              type: 'error',
-              message: res.data.message
-            })
-          }
-        })
+          })
+        }).catch()
       },
       handleCommand (command) {
         let vm = this
         switch (command) {
           case 'deleteHandle':
-            $axios.get(`/api/posts/${vm.message._id}/remove`).then((res) => {
-              if (res.data.status === 'success') {
-                vm.$message({
-                  type: 'success',
-                  message: res.data.message
-                })
-                vm.$emit('getPostList')
-              } else {
-                vm.$message({
-                  type: 'error',
-                  message: res.data.message
-                })
-              }
-            })
+            vm.$confirm('确认删除？', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
+              $axios.get(`/api/posts/${vm.message._id}/remove`).then((res) => {
+                if (res.data.status === 'success') {
+                  vm.$message({
+                    type: 'success',
+                    message: res.data.message
+                  })
+                  vm.$emit('getPostList')
+                } else {
+                  vm.$message({
+                    type: 'error',
+                    message: res.data.message
+                  })
+                }
+              })
+            }).catch()
             break
           case 'editHandle':
             vm.$router.push(`/editPosts/${vm.message._id}`)
@@ -162,6 +179,7 @@
     },
     created () {
       // this.imgSrc = `/api/image/${this.message.author.avatar}`
+      this.bloomLeaveMessage = false
     },
     watch: {
       // 监听路由变化，区分详情页和列表页

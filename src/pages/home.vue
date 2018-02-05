@@ -1,23 +1,20 @@
 <template>
-  <el-container class="home">
-    <el-header class="homeHeader">
-      <Header :title="title"></Header>
-    </el-header>
-    <el-main>
-      <div v-for="(message, index) in messageList" :key="index" @click.once="detailHandle(message._id)">
-        <Posts :message="message" @getPostList="showList"></Posts>
-      </div>
-    </el-main>
-  </el-container>
+  <Grail>
+    <div v-for="(message, index) in messageList" :key="index" @click.once="detailHandle(message._id)">
+      <Posts :message="message" @getPostList="showList"></Posts>
+    </div>
+  </Grail>
 </template>
 <script>
   import Posts from '../components/Posts.vue'
   import Header from '../components/Header.vue'
+  import Grail from '../components/Grail.vue'
   import $axios from '@/plugins/ajax'
   export default {
     components: {
       Posts,
-      Header
+      Header,
+      Grail
     },
     data () {
       return {
@@ -31,10 +28,6 @@
           create_at: '2017-12-25',
           pv: '1',
           commentsCount: '0'
-        },
-        title: {
-          title: 'myblog',
-          subTitle: 'my first blog'
         }
       }
     },
@@ -86,6 +79,6 @@
 </script>
 <style>
   .home .homeHeader {
-    margin-bottom: 50px
+    margin-bottom: 50px;
   }
 </style>

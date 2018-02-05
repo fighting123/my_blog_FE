@@ -1,46 +1,39 @@
 <template>
-  <el-container class="createPosts">
-    <el-header class="postsHeader">
-      <Header :title="title"></Header>
-    </el-header>
-    <el-main>
-      <el-row class="posts">
-        <el-col :span="2">
-          <img :src="imgSrc" alt="" class="asideAvatar">
-        </el-col>
-        <el-col :span="22" class="messageContent">
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="ruleForm.title"></el-input>
-            </el-form-item>
-            <el-form-item label="内容" prop="createPosts">
-              <el-input type="textarea" v-model="ruleForm.content" :autosize="{ minRows: 12 }"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">发布</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </el-main>
-  </el-container>
+  <Grail>
+    <el-row class="createPosts">
+      <el-col :span="2">
+        <img :src="imgSrc" alt="" class="asideAvatar">
+      </el-col>
+      <el-col :span="22" class="messageContent">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="ruleForm.title"></el-input>
+          </el-form-item>
+          <el-form-item label="内容" prop="createPosts">
+            <el-input type="textarea" v-model="ruleForm.content" :autosize="{ minRows: 12 }"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')">发布</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </Grail>
 </template>
 <script>
   import Posts from '../components/Posts.vue'
   import Header from '../components/Header.vue'
   import $axios from '@/plugins/ajax'
   import localStorage from '@/plugins/localStorage'
+  import Grail from '../components/Grail.vue'
   export default {
     components: {
       Posts,
-      Header
+      Header,
+      Grail
     },
     data () {
       return {
-        title: {
-          title: 'myblog',
-          subTitle: 'my first blog'
-        },
         imgSrc: '',
         ruleForm: {
           title: '',
@@ -118,10 +111,7 @@
   }
 </script>
 <style>
-  .createPosts .postsHeader {
-    margin-bottom: 50px
-  }
-  .createPosts .posts {
+  .createPosts {
     margin: auto;
   }
   .createPosts .messageContent {
