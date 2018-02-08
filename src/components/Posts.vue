@@ -66,6 +66,7 @@
         return `/api/image/${this.message.author.avatar}`
       },
       messageContent: function () {
+        // 超过一定字数显示省略号
         let str = this.message.content
         var l = str.length
         if (this.$route.path.indexOf('detail') > -1) {
@@ -193,6 +194,7 @@
 <style>
   .posts {
     margin: auto;
+    cursor: pointer;
   }
   .posts .mainContent {
     margin: 0;
@@ -209,7 +211,6 @@
     font-weight: 600;
     color: #409eff;
     margin: 5px 0 20px 0;
-    cursor: pointer;
   }
   .posts .messageCode {
     margin: 0 0 20px 0;
@@ -218,9 +219,6 @@
   .posts .messageFooter {
     font-size: 12px;
     color: #909399;
-  }
-  .posts .messageFooterRight {
-    cursor: pointer;
   }
   .posts .messageContent .leaveMessTitle {
     margin-bottom: 5px;

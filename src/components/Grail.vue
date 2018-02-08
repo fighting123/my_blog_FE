@@ -31,6 +31,9 @@
 </script>
 <style>
   .home .homeHeader {
-    margin-bottom: 50px;
+     margin-bottom: 50px;
+   }
+  .home .el-main {
+    padding-bottom: 0px;
   }
 </style>

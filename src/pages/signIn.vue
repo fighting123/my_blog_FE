@@ -59,7 +59,7 @@
                 })
                 localStorage.set('_id', res.data.info, res.data.expTime)
                 localStorage.set('imgUrl', res.data.imgUrl, res.data.expTime)
-                vm.$router.push('/')
+                vm.$router.push(`/home/${res.data.info}`)
                 store.commit('checkLogin', true)
                 store.commit('setUser', vm.signInForm.name)
               } else {
