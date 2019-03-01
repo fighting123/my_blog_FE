@@ -84,6 +84,7 @@
         this.detailHandle(this.$route.params.id)
         this.showHome = false
       }
+      this.currentPage = 1
     },
     watch: {
       // 监听路由变化，区分详情页和列表页

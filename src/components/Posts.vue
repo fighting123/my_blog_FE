@@ -63,7 +63,11 @@
     },
     computed: {
       imgSrc: function () {
-        return `/api/image/${this.message.author.avatar}`
+        if (`/api/image/${this.message.author.avatar}`) {
+          return `/api/image/${this.message.author.avatar}`
+        } else {
+          return '../../moren.png'
+        }
       },
       messageContent: function () {
         // 超过一定字数显示省略号
